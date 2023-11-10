@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
-import 'dart:io';
-import 'package:path/path.dart' show join;
 import 'package:path_provider/path_provider.dart';
-
-import 'package:flutter/material.dart';
-import 'package:camera/camera.dart';
+import 'package:path/path.dart';
+import 'dart:io';
 
 class CameraScreen extends StatefulWidget {
   @override
@@ -69,16 +66,27 @@ class _CameraScreenState extends State<CameraScreen> {
                 try {
                   // Ensure that the camera is initialized.
                   await _initializeControllerFuture;
-              
-                  // Attempt to take a picture and then get the location
-                  // where the image file is saved.
-                  final image = await _controller!.takePicture();
-              
+
+                  // Attempt to take a picture and get the file.
+                  final imageFile = await _controller!.takePicture();
+
+                  // Get the directory to store images.
+                  final directory = await getApplicationDocumentsDirectory();
+
+                  // Create a new file path in the app's documents directory.
+                  final String fileName = basename(imageFile.path);
+                  final String filePath = '${directory.path}/$fileName';
+
+                  // Copy the file to the new path.
+                  await imageFile.saveTo(filePath);
+
+                  // TODO: You may want to add the image information to a local database or a list to track all images.
+
                   // If the picture was taken, display it on a new screen.
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => DisplayPictureScreen(imagePath: image.path),
+                      builder: (context) => DisplayPictureScreen(imagePath: filePath),
                     ),
                   );
                 } catch (e) {
@@ -107,9 +115,22 @@ class DisplayPictureScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Display the Picture')),
-      // The image is stored as a file on the device. Use the `Image.file`
-      // constructor with the given path to display the image.
       body: Image.file(File(imagePath)),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          // TODO: Implement the functionality to send the image to the server
+          print('Send image to the server for analysis');
+        },
+        tooltip: 'Send for Analysis',
+        child: Icon(Icons.send),
+      ),
     );
   }
+}
+
+class SavedImage {
+  final String path;
+  final DateTime dateTaken;
+
+  SavedImage({required this.path, required this.dateTaken});
 }
