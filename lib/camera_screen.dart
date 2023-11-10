@@ -19,9 +19,7 @@ class _CameraScreenState extends State<CameraScreen> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance?.addPostFrameCallback((_) {
-      _initializeCamera();
-    });
+    _initializeCamera();
   }
 
   Future<void> _initializeCamera() async {
