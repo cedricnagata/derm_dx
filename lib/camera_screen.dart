@@ -19,7 +19,9 @@ class _CameraScreenState extends State<CameraScreen> {
   @override
   void initState() {
     super.initState();
-    _initializeCamera();
+    WidgetsBinding.instance?.addPostFrameCallback((_) {
+      _initializeCamera();
+    });
   }
 
   Future<void> _initializeCamera() async {
@@ -69,24 +71,16 @@ class _CameraScreenState extends State<CameraScreen> {
                 try {
                   // Ensure that the camera is initialized.
                   await _initializeControllerFuture;
-
-                  // Construct the path where the image should be saved using
-                  // the pattern package.
-                  final path = join(
-                    // Store the picture in the temp directory.
-                    // Find the temp directory using the `path_provider` plugin.
-                    (await getTemporaryDirectory()).path,
-                    '${DateTime.now()}.png',
-                  );
-
-                  // Attempt to take a picture and log where it's been saved.
-                  await _controller!.takePicture(path);
-
+              
+                  // Attempt to take a picture and then get the location
+                  // where the image file is saved.
+                  final image = await _controller!.takePicture();
+              
                   // If the picture was taken, display it on a new screen.
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => DisplayPictureScreen(imagePath: path),
+                      builder: (context) => DisplayPictureScreen(imagePath: image.path),
                     ),
                   );
                 } catch (e) {
