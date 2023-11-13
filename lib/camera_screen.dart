@@ -58,7 +58,27 @@ class _CameraScreenState extends State<CameraScreen> {
         if (snapshot.connectionState == ConnectionState.done) {
           // If the Future is complete, display the preview.
           return Scaffold(
-            body: CameraPreview(_controller!), // Display the camera preview
+            body: Stack(
+              children: <Widget>[
+                // Camera preview
+                CameraPreview(_controller!),
+
+                // Back button
+                Positioned(
+                  top: 40, // Adjust the position as needed
+                  left: 20, // Adjust the position as needed
+                  child: SafeArea(
+                    child: IconButton(
+                      icon: Icon(Icons.arrow_back, color: Colors.white),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                  ),
+                ),
+                // ... other UI elements ...
+              ],
+            ),
             floatingActionButton: FloatingActionButton(
               child: Icon(Icons.camera),
               // Provide an onPressed callback.
@@ -86,7 +106,8 @@ class _CameraScreenState extends State<CameraScreen> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => DisplayPictureScreen(imagePath: filePath),
+                      builder: (context) =>
+                          DisplayPictureScreen(imagePath: filePath),
                     ),
                   );
                 } catch (e) {
