@@ -148,10 +148,3 @@ class DisplayPictureScreen extends StatelessWidget {
     );
   }
 }
-
-class SavedImage {
-  final String path;
-  final DateTime dateTaken;
-
-  SavedImage({required this.path, required this.dateTaken});
-}
