@@ -1,8 +1,14 @@
-import 'package:flutter/material.dart';
 import 'dart:io';
+import 'dart:convert';
+
+import 'package:http/http.dart' as http;
+import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
+
+import 'upload_page.dart';  // Import the new upload page
+import 'results_page.dart'; // Import the new results page
 
 class PhotoLibraryScreen extends StatefulWidget {
   @override
@@ -88,6 +94,17 @@ class _PhotoLibraryScreenState extends State<PhotoLibraryScreen> {
       // You can open app settings for them to change the permission
       openAppSettings();
     }
+  }  
+
+  void _navigateToUploadPage() {
+    if (_selectedImage != null) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => UploadPage(imageFile: _selectedImage!),
+        ),
+      );
+    }
   }
 
   @override
@@ -99,10 +116,7 @@ class _PhotoLibraryScreenState extends State<PhotoLibraryScreen> {
           if (_selectedImage != null)
             IconButton(
               icon: Icon(Icons.cloud_upload),
-              onPressed: () {
-                // TODO: Implement the upload functionality
-                print('Upload ${_selectedImage!.path}');
-              },
+              onPressed: _navigateToUploadPage,
             ),
             IconButton(
               icon: Icon(Icons.delete),
