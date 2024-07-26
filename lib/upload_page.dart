@@ -14,26 +14,22 @@ class UploadPage extends StatefulWidget {
 
 class _UploadPageState extends State<UploadPage> {
   final _formKey = GlobalKey<FormState>();
-  String? age;
-  String? sex;
-  String? diagnosis;
+  String? _age;
+  String? _sex;
+  String? _diagnosis;
 
   void _uploadImage() async {
     if (_formKey.currentState?.validate() ?? false) {
       _formKey.currentState?.save();
-      print('Age: $age, Sex: $sex, Diagnosis: $diagnosis');  // Debug output
+      print('Age: $_age, Sex: $_sex');  // Debug output
 
       try {
         var request = http.MultipartRequest('POST', Uri.parse('http://10.0.2.2:5000/predict'));  // Use 10.0.2.2
         request.files.add(await http.MultipartFile.fromPath('file', widget.imageFile.path));
-        request.fields['age'] = age!;
-        request.fields['sex'] = sex!;
-        
-        // Only add diagnosis if it is not null or empty
-        if (diagnosis != null && diagnosis!.isNotEmpty) {
-          request.fields['diagnosis'] = diagnosis!;
-        } else {
-          print('Diagnosis is empty');  // Debug output
+        request.fields['age'] = _age!;
+        request.fields['sex'] = _sex!;
+        if (_diagnosis != null && _diagnosis!.isNotEmpty) {
+          request.fields['diagnosis'] = _diagnosis!;
         }
 
         print('Sending request to server...');  // Debug output
@@ -86,7 +82,7 @@ class _UploadPageState extends State<UploadPage> {
                   }
                   return null;
                 },
-                onSaved: (value) => age = value,
+                onSaved: (value) => _age = value,
                 keyboardType: TextInputType.number,
               ),
               TextFormField(
@@ -97,11 +93,13 @@ class _UploadPageState extends State<UploadPage> {
                   }
                   return null;
                 },
-                onSaved: (value) => sex = value,
+                onSaved: (value) => _sex = value,
               ),
               TextFormField(
-                decoration: InputDecoration(labelText: 'Diagnosis (optional)'),
-                onSaved: (value) => diagnosis = value,
+                decoration: InputDecoration(labelText: 'Diagnosis (Optional)'),
+                onSaved: (value) {
+                  _diagnosis = value;
+                },
               ),
               SizedBox(height: 20),
               ElevatedButton(
