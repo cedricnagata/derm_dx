@@ -11,10 +11,10 @@ class ResultsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     // Parse the result as JSON
     Map<String, dynamic> resultMap = json.decode(result);
-    String prediction = resultMap['prediction'].toString();
-
-    double confidenceVal = resultMap['confidence'] * 100;
-    String confidence = "${confidenceVal.toStringAsFixed(2)}%";
+    String diagnosis = resultMap['diagnosis'].toString();
+    double diagnosisConfidence = resultMap['diagnosis_confidence'] * 100;
+    String benignMalignant = resultMap['benign_malignant'].toString();
+    double benignMalignantConfidence = resultMap['benign_malignant_confidence'] * 100;
 
     return Scaffold(
       appBar: AppBar(
@@ -49,24 +49,34 @@ class ResultsPage extends StatelessWidget {
                 child: Column(
                   children: [
                     Text(
-                      'Prediction:',
+                      'Diagnosis:',
                       style: TextStyle(fontSize: 24, color: Colors.black87, fontWeight: FontWeight.bold),
                       textAlign: TextAlign.center,
                     ),
                     Text(
-                      prediction,
+                      diagnosis,
                       style: TextStyle(fontSize: 24, color: Colors.black87),
+                      textAlign: TextAlign.center,
+                    ),
+                    Text(
+                      'Confidence: ${diagnosisConfidence.toStringAsFixed(2)}%',
+                      style: TextStyle(fontSize: 20, color: Colors.black87),
                       textAlign: TextAlign.center,
                     ),
                     SizedBox(height: 20),
                     Text(
-                      'Confidence:',
+                      'Benign or Malignant:',
                       style: TextStyle(fontSize: 24, color: Colors.black87, fontWeight: FontWeight.bold),
                       textAlign: TextAlign.center,
                     ),
                     Text(
-                      confidence,
+                      benignMalignant,
                       style: TextStyle(fontSize: 24, color: Colors.black87),
+                      textAlign: TextAlign.center,
+                    ),
+                    Text(
+                      'Confidence: ${benignMalignantConfidence.toStringAsFixed(2)}%',
+                      style: TextStyle(fontSize: 20, color: Colors.black87),
                       textAlign: TextAlign.center,
                     ),
                   ],
