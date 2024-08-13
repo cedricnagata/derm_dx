@@ -1,6 +1,8 @@
+import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
+import 'tflite_service.dart';
 import 'results_page.dart';
 
 class UploadPage extends StatefulWidget {
@@ -13,39 +15,44 @@ class UploadPage extends StatefulWidget {
 }
 
 class _UploadPageState extends State<UploadPage> {
-  void _uploadImage() async {
-    try {
-      var request = http.MultipartRequest('POST', Uri.parse('http://10.0.2.2:5000/predict'));  // Use 10.0.2.2 for local server
+  final TFLiteService _tfliteService = TFLiteService();
 
-      // Add the image file to the request
-      request.files.add(await http.MultipartFile.fromPath('file', widget.imageFile.path));
+  @override
+  void dispose() {
+    _tfliteService.close();
+    super.dispose();
+  }
 
-      print('Sending request to server...');  // Debug output
+  Future<void> _predictAndNavigate() async {
+    Uint8List imageBytes = await widget.imageFile.readAsBytes();
 
-      // Send the request
-      var response = await request.send();
-      print('Response status: ${response.statusCode}');  // Debug output
+    var diagnosisResult = _tfliteService.predictDiagnosis(imageBytes);
+    var benignMalignantResult = _tfliteService.predictBenignMalignant(imageBytes);
 
-      if (response.statusCode == 200) {
-        var responseBody = await response.stream.bytesToString();
-        print('Response from server: $responseBody');  // Debug output
+    // Map predictions to labels using the labels defined in TFLiteService
+    String diagnosis = _tfliteService.diagnosisLabels[diagnosisResult['diagnosis_pred']];
+    dynamic diagnosisConfidence = diagnosisResult['diagnosis_confidence'];
+    String benignMalignant = _tfliteService.benignMalignantLabels[benignMalignantResult['benign_malignant_pred']];
+    dynamic benignMalignantConfidence = benignMalignantResult['benign_malignant_confidence'];
 
-        // Navigate to the results page with the response
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => ResultsPage(result: responseBody),
-          ),
-        );
-      } else {
-        var responseBody = await response.stream.bytesToString();
-        print('Upload failed with status: ${response.statusCode}, body: $responseBody');  // Debug output
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Upload failed')));
-      }
-    } catch (e) {
-      print('Error during upload: $e');  // Debug output
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('An error occurred')));
-    }
+    // Create a result map similar to the Flask server response
+    Map<String, dynamic> resultMap = {
+      'diagnosis': diagnosis,
+      'diagnosis_confidence': diagnosisConfidence,
+      'benign_malignant': benignMalignant,
+      'benign_malignant_confidence': benignMalignantConfidence,
+    };
+
+    // Convert the map to a JSON string
+    String resultJson = json.encode(resultMap);
+
+    // Navigate to the results page with the predictions
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ResultsPage(result: resultJson),
+      ),
+    );
   }
 
   @override
@@ -61,8 +68,8 @@ class _UploadPageState extends State<UploadPage> {
             Image.file(widget.imageFile, height: 200, width: 200),
             SizedBox(height: 20),
             ElevatedButton(
-              onPressed: _uploadImage,
-              child: Text('Upload'),
+              onPressed: _predictAndNavigate,
+              child: Text('Predict and See Results'),
             ),
           ],
         ),

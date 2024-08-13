@@ -30,7 +30,9 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  tflite_flutter:
   http: ^0.13.3
+  image: ^3.0.1
   image_picker: ^0.8.4+4
   multi_image_picker: ^4.8.0
   camera: ^0.9.4+5
@@ -63,6 +65,10 @@ flutter:
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
+
+  assets:
+    - assets/models/diagnosis_model.tflite
+    - assets/models/benign_malignant_model.tflite
 
   # To add assets to your application, add an assets section, like this:
   # assets:
