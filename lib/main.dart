@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'camera_screen.dart';
 import 'package:image_picker/image_picker.dart';
@@ -18,8 +17,18 @@ class MyApp extends StatelessWidget {
       title: 'DERMDX',
       theme: ThemeData(
         primarySwatch: Colors.blue,
+        visualDensity: VisualDensity.adaptivePlatformDensity,
+        textTheme: TextTheme(
+          headline1: TextStyle(fontSize: 32.0, fontWeight: FontWeight.bold, color: Colors.blueAccent),
+          headline6: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold, color: Colors.blueAccent),
+          bodyText2: TextStyle(fontSize: 18.0),
+        ),
+        buttonTheme: ButtonThemeData(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18.0)),
+          buttonColor: Colors.blueAccent,
+        ),
       ),
-      home: HomePage(), // Use HomePage as the main screen
+      home: HomePage(),
       debugShowCheckedModeBanner: false,
     );
   }
@@ -30,23 +39,13 @@ class HomePage extends StatelessWidget {
     try {
       final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
       if (pickedFile != null) {
-        // Get the directory to store images.
         final directory = await getApplicationDocumentsDirectory();
-  
-        // Create a new file path in the app's documents directory.
         final String fileName = basename(pickedFile.path);
         final String filePath = '${directory.path}/$fileName';
-  
-        // Copy the file to the new path.
         final file = File(pickedFile.path);
         await file.copy(filePath);
-  
-        // TODO: You may want to add the image information to a local database or a list to track all images.
-  
-        // You can now display the image or add it to your photo library screen.
       }
     } catch (e) {
-      // If an error occurs, log the error to the console.
       print(e);
     }
   }
@@ -56,30 +55,51 @@ class HomePage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('DERMDX Home'),
+        centerTitle: true,
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => CameraScreen()),
-                );
-              },
-              child: Text('Open Camera'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => PhotoLibraryScreen()),
-                );
-              },
-              child: Text('View Photo Library'),
-            ),
-          ],
+      body: Center(  // Centering the content
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Text(
+                'Welcome to DERMDX',
+                style: Theme.of(context).textTheme.headline1,
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(height: 20),
+              ElevatedButton.icon(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => CameraScreen()),
+                  );
+                },
+                icon: Icon(Icons.camera_alt),
+                label: Text('Capture Image'),
+                style: ElevatedButton.styleFrom(
+                  padding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 20.0),
+                  textStyle: Theme.of(context).textTheme.headline6,
+                ),
+              ),
+              SizedBox(height: 20),
+              ElevatedButton.icon(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => PhotoLibraryScreen()),
+                  );
+                },
+                icon: Icon(Icons.photo_library),
+                label: Text('Select from Library'),
+                style: ElevatedButton.styleFrom(
+                  padding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 20.0),
+                  textStyle: Theme.of(context).textTheme.headline6,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

@@ -1,14 +1,7 @@
-import 'dart:io';
-import 'dart:convert';
-
-import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+import 'dart:io';
 import 'package:path_provider/path_provider.dart';
-import 'package:multi_image_picker/multi_image_picker.dart';
-import 'package:permission_handler/permission_handler.dart';
-
-import 'upload_page.dart';  // Import the new upload page
-import 'results_page.dart'; // Import the new results page
+import 'upload_page.dart';
 
 class PhotoLibraryScreen extends StatefulWidget {
   @override
@@ -16,95 +9,58 @@ class PhotoLibraryScreen extends StatefulWidget {
 }
 
 class _PhotoLibraryScreenState extends State<PhotoLibraryScreen> {
-  File? _selectedImage;
+  List<File> _images = [];
 
-  Future<List<File>> _loadImages() async {
-    final directory = await getApplicationDocumentsDirectory();
-    final photoDir = Directory('${directory.path}');
-    List<File> files = await photoDir
-        .list()
-        .where((item) => item.path.endsWith('.png') || item.path.endsWith('.jpg'))
-        .map((item) => File(item.path))
-        .toList();
-    return files;
+  @override
+  void initState() {
+    super.initState();
+    _loadImages();
   }
 
-  void _selectImage(File image) {
+  Future<void> _loadImages() async {
+    final directory = await getApplicationDocumentsDirectory();
+    final imageDirectory = Directory(directory.path);
+    final imageList = imageDirectory.listSync().where((item) => item is File && item.path.endsWith('.jpg'));
     setState(() {
-      if (_selectedImage != null && _selectedImage!.path == image.path) {
-        // If the same image is tapped again, unselect it
-        _selectedImage = null;
-      } else {
-        // Select the new image
-        _selectedImage = image;
-      }
+      _images = imageList.map((item) => File(item.path)).toList();
     });
   }
 
-  void _deleteSelectedImage() {
-    if (_selectedImage != null) {
-      setState(() {
-        _selectedImage!.deleteSync();
-        _selectedImage = null;
-      });
-    }
-  }
-
-  Future<void> _pickImagesFromGallery() async {
+  Future<void> _deleteImage(File image) async {
     try {
-      List<Asset> images = await MultiImagePicker.pickImages(
-        maxImages: 10,  // Set your desired max number of images
-        enableCamera: true,
-        selectedAssets: [], // Pass in a list of selected assets (if you want to maintain the selection)
-        materialOptions: MaterialOptions(
-          actionBarTitle: "Select Photos",
-        ),
-      );
-
-      // Now, you can save these images to your app's directory
-      for (var asset in images) {
-        final byteData = await asset.getByteData();
-        final file = File('${(await getApplicationDocumentsDirectory()).path}/${asset.name}');
-        await file.writeAsBytes(byteData.buffer.asUint8List(byteData.offsetInBytes, byteData.lengthInBytes));
-
-        // You may also want to add each saved image to a list or database for your photo library
-      }
+      await image.delete();
+      setState(() {
+        _images.remove(image);
+      });
     } catch (e) {
-      print(e);
+      print('Error deleting image: $e');
+      // Handle any errors
     }
   }
 
-  Future<void> _requestAndOpenGallery() async {
-    var status = await Permission.photos.status;
-
-    if (status.isGranted) {
-      // Permission is already granted; open the gallery
-      _pickImagesFromGallery();
-    } else if (status.isDenied) {
-      // Request permission
-      if (await Permission.photos.request().isGranted) {
-        // Permission is granted; open the gallery
-        _pickImagesFromGallery();
-      } else {
-        // Permission is denied; handle the denial
-        print('Access to photos denied');
-      }
-    } else if (status.isPermanentlyDenied) {
-      // The user opted not to allow your app to access the gallery.
-      // You can open app settings for them to change the permission
-      openAppSettings();
-    }
-  }  
-
-  void _navigateToUploadPage() {
-    if (_selectedImage != null) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => UploadPage(imageFile: _selectedImage!),
-        ),
-      );
-    }
+  void _confirmDeleteImage(File image) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Delete Image'),
+          content: Text('Are you sure you want to delete this image?'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+                _deleteImage(image);
+              },
+              child: Text('Delete'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -112,62 +68,50 @@ class _PhotoLibraryScreenState extends State<PhotoLibraryScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Photo Library'),
-        actions: <Widget>[
-          if (_selectedImage != null)
-            IconButton(
-              icon: Icon(Icons.cloud_upload),
-              onPressed: _navigateToUploadPage,
-            ),
-            IconButton(
-              icon: Icon(Icons.delete),
-              onPressed: _deleteSelectedImage,
-            ),
-        ],
+        centerTitle: true,
       ),
-      body: Column(
-        children: [
-          ElevatedButton(
-            onPressed: _requestAndOpenGallery,
-            child: Text('Import from Gallery'),
-          ),
-          Expanded(
-            child: FutureBuilder<List<File>>(
-              future: _loadImages(),
-              builder: (BuildContext context, AsyncSnapshot<List<File>> snapshot) {
-                if (snapshot.connectionState == ConnectionState.done && snapshot.hasData) {
-                  return GridView.builder(
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 3, // Number of columns
-                      crossAxisSpacing: 4.0, // Horizontal space between cards
-                      mainAxisSpacing: 4.0,  // Vertical space between cards
+      body: _images.isEmpty
+          ? Center(child: Text('No images found', style: TextStyle(fontSize: 18.0)))
+          : GridView.builder(
+              padding: const EdgeInsets.all(8.0),
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 3,
+                crossAxisSpacing: 8.0,
+                mainAxisSpacing: 8.0,
+              ),
+              itemCount: _images.length,
+              itemBuilder: (context, index) {
+                return Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => UploadPage(imageFile: _images[index]),
+                          ),
+                        );
+                      },
+                      child: Image.file(_images[index], fit: BoxFit.cover),
                     ),
-                    itemCount: snapshot.data!.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      return InkWell(
-                        onTap: () => _selectImage(snapshot.data![index]),
-                        child: Opacity(
-                          opacity: _isSelected(snapshot.data![index]) ? 0.5 : 1.0,
-                          child: Image.file(snapshot.data![index]),
+                    Positioned(
+                      right: 4,
+                      top: 4,
+                      child: GestureDetector(
+                        onTap: () {
+                          _confirmDeleteImage(_images[index]); // Trigger delete confirmation
+                        },
+                        child: Icon(
+                          Icons.delete,
+                          color: Colors.redAccent.withOpacity(0.8),
                         ),
-                      );
-                    },
-                  );
-                } else if (snapshot.connectionState == ConnectionState.waiting ||
-                           !snapshot.hasData) {
-                  return Center(child: CircularProgressIndicator());
-                } else {
-                  // In case of an error or no images found
-                  return Center(child: Text("No images found."));
-                }
+                      ),
+                    ),
+                  ],
+                );
               },
             ),
-          ),
-        ],
-      ),
     );
-  }
-
-  bool _isSelected(File image) {
-    return _selectedImage != null && _selectedImage!.path == image.path;
   }
 }

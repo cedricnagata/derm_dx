@@ -3,6 +3,7 @@ import 'package:camera/camera.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart';
 import 'dart:io';
+import 'photo_library_screen.dart';
 
 class CameraScreen extends StatefulWidget {
   @override
@@ -20,130 +21,80 @@ class _CameraScreenState extends State<CameraScreen> {
   }
 
   Future<void> _initializeCamera() async {
-    // Obtain a list of the available cameras on the device.
     final cameras = await availableCameras();
-
-    // Get a specific camera from the list of available cameras.
     final firstCamera = cameras.first;
 
-    // To display the current output from the Camera,
-    // create a CameraController.
     _controller = CameraController(
       firstCamera,
       ResolutionPreset.medium,
     );
 
-    // Next, initialize the controller. This returns a Future.
     _initializeControllerFuture = _controller!.initialize();
 
-    // Ensure the camera is initialized before displaying the preview.
-    // This is done using a FutureBuilder.
     setState(() {});
   }
 
   @override
   void dispose() {
-    // Dispose of the controller when the widget is disposed.
     _controller?.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    // A FutureBuilder is used to display a loading spinner
-    // until the camera is initialized.
-    return FutureBuilder<void>(
-      future: _initializeControllerFuture,
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.done) {
-          // If the Future is complete, display the preview.
-          return Scaffold(
-            body: Stack(
+    return Scaffold(
+      backgroundColor: Colors.black,  // Set the background to black
+      appBar: AppBar(
+        title: Text('Capture Image'),
+        centerTitle: true,
+        backgroundColor: Colors.black,  // Set the AppBar background to black
+      ),
+      body: FutureBuilder<void>(
+        future: _initializeControllerFuture,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            return Stack(
               children: <Widget>[
-                // Camera preview
-                CameraPreview(_controller!),
-
-                // Back button
+                Center(
+                  child: CameraPreview(_controller!),  // Center the camera preview
+                ),
                 Positioned(
-                  top: 40, // Adjust the position as needed
-                  left: 20, // Adjust the position as needed
-                  child: SafeArea(
-                    child: IconButton(
-                      icon: Icon(Icons.arrow_back, color: Colors.white),
-                      onPressed: () {
-                        Navigator.of(context).pop();
+                  bottom: 30,
+                  left: 0,
+                  right: 0,
+                  child: Center(
+                    child: FloatingActionButton(
+                      backgroundColor: Colors.white,
+                      child: Icon(Icons.camera, color: Colors.black, size: 30),
+                      onPressed: () async {
+                        try {
+                          await _initializeControllerFuture;
+                          final image = await _controller!.takePicture();
+
+                          final directory = await getApplicationDocumentsDirectory();
+                          final String fileName = basename(image.path);
+                          final String filePath = '${directory.path}/$fileName';
+                          await image.saveTo(filePath);
+
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => PhotoLibraryScreen(),
+                            ),
+                          );
+                        } catch (e) {
+                          print(e);
+                        }
                       },
                     ),
                   ),
                 ),
-                // ... other UI elements ...
               ],
-            ),
-            floatingActionButton: FloatingActionButton(
-              child: Icon(Icons.camera),
-              // Provide an onPressed callback.
-              onPressed: () async {
-                try {
-                  // Ensure that the camera is initialized.
-                  await _initializeControllerFuture;
-
-                  // Attempt to take a picture and get the file.
-                  final imageFile = await _controller!.takePicture();
-
-                  // Get the directory to store images.
-                  final directory = await getApplicationDocumentsDirectory();
-
-                  // Create a new file path in the app's documents directory.
-                  final String fileName = basename(imageFile.path);
-                  final String filePath = '${directory.path}/$fileName';
-
-                  // Copy the file to the new path.
-                  await imageFile.saveTo(filePath);
-
-                  // TODO: You may want to add the image information to a local database or a list to track all images.
-
-                  // If the picture was taken, display it on a new screen.
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) =>
-                          DisplayPictureScreen(imagePath: filePath),
-                    ),
-                  );
-                } catch (e) {
-                  // If an error occurs, log the error to the console.
-                  print(e);
-                }
-              },
-            ),
-          );
-        } else {
-          // Otherwise, display a loading indicator.
-          return Center(child: CircularProgressIndicator());
-        }
-      },
-    );
-  }
-}
-
-// A widget that displays the picture taken by the user.
-class DisplayPictureScreen extends StatelessWidget {
-  final String imagePath;
-
-  const DisplayPictureScreen({required this.imagePath});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('Display the Picture')),
-      body: Image.file(File(imagePath)),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // TODO: Implement the functionality to send the image to the server
-          print('Send image to the server for analysis');
+            );
+          } else {
+            return Center(child: CircularProgressIndicator());
+          }
         },
-        tooltip: 'Send for Analysis',
-        child: Icon(Icons.send),
       ),
     );
   }

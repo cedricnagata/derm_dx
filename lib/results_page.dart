@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'dart:convert'; // Import for JSON parsing
-import 'main.dart';
 
 class ResultsPage extends StatelessWidget {
   final String result;
@@ -18,7 +17,9 @@ class ResultsPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false, // Remove the back button
         title: Text('Results'),
+        centerTitle: true,
       ),
       body: Center(
         child: Padding(
@@ -54,48 +55,38 @@ class ResultsPage extends StatelessWidget {
                       textAlign: TextAlign.center,
                     ),
                     Text(
-                      diagnosis,
-                      style: TextStyle(fontSize: 24, color: Colors.black87),
-                      textAlign: TextAlign.center,
+                      '$diagnosis',
+                      style: TextStyle(fontSize: 20, color: diagnosis == '1' ? Colors.red.shade800 : Colors.green.shade800),
                     ),
+                    SizedBox(height: 10),
                     Text(
                       'Confidence: ${diagnosisConfidence.toStringAsFixed(2)}%',
-                      style: TextStyle(fontSize: 20, color: Colors.black87),
-                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 18),
                     ),
-                    SizedBox(height: 20),
+                    SizedBox(height: 10),
                     Text(
-                      'Benign or Malignant:',
+                      'Benign/Malignant:',
                       style: TextStyle(fontSize: 24, color: Colors.black87, fontWeight: FontWeight.bold),
                       textAlign: TextAlign.center,
                     ),
                     Text(
-                      benignMalignant,
-                      style: TextStyle(fontSize: 24, color: Colors.black87),
-                      textAlign: TextAlign.center,
+                      '$benignMalignant',
+                      style: TextStyle(fontSize: 20, color: benignMalignant == '1' ? Colors.red.shade800 : Colors.green.shade800),
                     ),
+                    SizedBox(height: 10),
                     Text(
                       'Confidence: ${benignMalignantConfidence.toStringAsFixed(2)}%',
-                      style: TextStyle(fontSize: 20, color: Colors.black87),
-                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 18),
                     ),
                   ],
                 ),
               ),
-              SizedBox(height: 40),
+              SizedBox(height: 30),
               ElevatedButton(
                 onPressed: () {
-                  Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(builder: (context) => HomePage()),
-                    (Route<dynamic> route) => false,
-                  );
+                  Navigator.popUntil(context, (route) => route.isFirst); // Return to HomePage
                 },
                 child: Text('Return Home'),
-                style: ElevatedButton.styleFrom(
-                  padding: EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-                  textStyle: TextStyle(fontSize: 18),
-                ),
               ),
             ],
           ),
