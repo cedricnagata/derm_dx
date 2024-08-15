@@ -1,63 +1,31 @@
-# DERMdx: Skin Lesion Diagnosis App
+# DERMDX: Skin Lesion Diagnosis App
 
-**DERMdx** is an iOS app designed to help users diagnose skin lesions by taking a photo of the lesion and processing it to determine whether it is benign or malignant. The app utilizes deep learning models trained on over 44,000 images of real skin lesions to provide accurate results at the touch of a button.
+**DERMDX** is an iOS app designed to help users diagnose skin lesions by taking a photo of the lesion and processing it to determine whether it is benign or malignant. The app utilizes deep learning models trained on over 44,000 images of real skin lesions to provide accurate results at the touch of a button.
 
 ## Features
-- Capture or select an image of a skin lesion from your photo library.
-- Crop the image to ensure accurate analysis.
-- Get a diagnosis (nevus, melanoma, or other) and benign/malignant classification with confidence scores.
+- **Select or Capture an Image**: Users can either take a photo of their skin lesion using the phone's camera or select one from their photo library.
+- **Crop for Accuracy**: The app provides an intuitive cropping tool, allowing users to zoom in and focus on the lesion for more precise analysis.
+- **Diagnosis Prediction**: After the image is uploaded, the app runs it through a trained machine learning model to predict:
+    - The **diagnosis** (e.g., nevus, melanoma, or other).
+    - Whether the lesion is **benign** or **malignant**, with associated confidence scores.
+- **Results Page**: After processing, the app displays the predicted diagnosis, along with the confidence score for each classification (diagnosis and benign/malignant).
 
 ## App Workflow
-### 1. Home Screen
-On the home screen, users can start by selecting an image from their library.
+1. **Home Screen**: The user is welcomed with an option to select or capture an image of their skin lesion.
+2. **Photo Library**: The user can select an image of their lesion from their device's photo library.
+3. **Image Instructions**: The app provides instructions on how to crop the image to ensure the lesion is centered for accurate analysis.
+4. **Cropping Tool**: The user crops the image to focus on the lesion.
+5. **Image Upload**: Once the image is cropped, it is uploaded for analysis.
+6. **Processing**: The app processes the image, analyzing it through the machine learning model to predict both the diagnosis and malignancy of the lesion.
+7. **Results**: The results are displayed, providing the user with the predicted diagnosis (e.g., nevus, melanoma) and whether the lesion is benign or malignant. Confidence scores for both predictions are also shown.
 
-![Home Screen](https://github.com/cedricnagata/derm_dx/blob/main/demo_images/IMG_5040.PNG)
-
-### 2. Photo Library
-Users can choose images of skin lesions from their library for analysis.
-
-![Photo Library](https://github.com/cedricnagata/derm_dx/blob/main/demo_images/IMG_5041.PNG)
-
-### 3. Image Instructions
-Instructions guide users on how to crop the image for the most accurate diagnosis.
-
-![Image Instructions](https://github.com/cedricnagata/derm_dx/blob/main/demo_images/IMG_5042.PNG)
-
-### 4. Crop Image
-Users are prompted to crop the image to focus on the lesion.
-
-![Crop Image](https://github.com/cedricnagata/derm_dx/blob/main/demo_images/IMG_5043.PNG)
-
-### 5. Upload Image
-After cropping, the image is uploaded for analysis.
-
-![Upload Image](https://github.com/cedricnagata/derm_dx/blob/main/demo_images/IMG_5044.PNG)
-
-### 6. Processing
-The app analyzes the image and provides feedback on progress.
-
-![Processing](https://github.com/cedricnagata/derm_dx/blob/main/demo_images/IMG_5045.PNG)
-
-### 7. Results (Benign)
-Here is an example of a diagnosis result showing a benign lesion with confidence scores.
-
-![Benign Result](https://github.com/cedricnagata/derm_dx/blob/main/demo_images/IMG_5046.PNG)
-
-### 8. Results (Malignant)
-Here is an example of a diagnosis result showing a malignant lesion with confidence scores.
-
-![Malignant Result](https://github.com/cedricnagata/derm_dx/blob/main/demo_images/IMG_5047.PNG)
+## Technologies Used
+- **Flutter**: The app’s frontend is developed using Flutter for a smooth cross-platform experience on both Android and iOS.
+- **TensorFlow Lite**: The machine learning models for skin lesion diagnosis and malignancy classification are optimized for mobile using TensorFlow Lite.
 
 ## Conclusion
-DERMdx provides an easy-to-use solution for preliminary skin lesion diagnosis using cutting-edge machine learning techniques. It is designed to empower users with fast, reliable insights into their skin health.
+DERMdx empowers users by providing fast, reliable, and accurate insights into their skin health. With a simple user interface and powerful deep learning models running in the background, the app offers a convenient way to perform a preliminary diagnosis of skin lesions.
 
 ---
 
-### Tech Stack
-- **Flutter** for the mobile app frontend
-- **TensorFlow Lite** for the machine learning models
-- **Flask** for backend API (serving predictions)
-
----
-
-Feel free to try out the app and explore the codebase!
+Feel free to explore the codebase and try out the app for yourself!
