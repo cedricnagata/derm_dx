@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'camera_screen.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart';
@@ -71,19 +70,16 @@ class HomePage extends StatelessWidget {
                 textAlign: TextAlign.center,
               ),
               SizedBox(height: 20),
-              ElevatedButton.icon(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => CameraScreen()),
-                  );
-                },
-                icon: Icon(Icons.camera_alt),
-                label: Text('Capture Image'),
-                style: ElevatedButton.styleFrom(
-                  padding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 20.0),
-                  textStyle: Theme.of(context).textTheme.headlineSmall,
-                ),
+              Text(
+                'Accurate skin lesion detection at the touch of a button.',
+                style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.normal, color: Colors.blueGrey),
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(height: 20),
+              Text(
+                'Trained on 44,033 images of real skin lesions.',
+                style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.normal, color: Colors.blueGrey),
+                textAlign: TextAlign.center,
               ),
               SizedBox(height: 20),
               ElevatedButton.icon(
@@ -94,7 +90,7 @@ class HomePage extends StatelessWidget {
                   );
                 },
                 icon: Icon(Icons.photo_library),
-                label: Text('Select from Library'),
+                label: Text('Select Image from Library'),
                 style: ElevatedButton.styleFrom(
                   padding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 20.0),
                   textStyle: Theme.of(context).textTheme.headlineSmall,

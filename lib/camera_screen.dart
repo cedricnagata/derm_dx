@@ -1,5 +1,4 @@
 import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'package:path_provider/path_provider.dart';
@@ -32,7 +31,10 @@ class _CameraScreenState extends State<CameraScreen> {
       ResolutionPreset.max,
     );
 
-    _initializeControllerFuture = _controller!.initialize();
+    _initializeControllerFuture = _controller!.initialize().then((_) {
+      // Set focus mode to auto after camera initialization
+      _controller!.setFocusMode(FocusMode.auto);
+    });
 
     setState(() {});
   }

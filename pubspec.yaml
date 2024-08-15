@@ -34,6 +34,7 @@ dependencies:
   http: ^0.13.3
   image: ^3.0.1
   image_picker: ^0.8.4+4
+  image_cropper: ^4.0.0
   multi_image_picker: ^4.8.0
   camera: ^0.9.4+5
   path_provider: ^2.0.15

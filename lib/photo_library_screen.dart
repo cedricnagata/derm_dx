@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
+import 'package:image_picker/image_picker.dart';
+import 'crop_page.dart'; // Import the CropPage
 import 'upload_page.dart';
 
 class PhotoLibraryScreen extends StatefulWidget {
@@ -10,6 +12,7 @@ class PhotoLibraryScreen extends StatefulWidget {
 
 class _PhotoLibraryScreenState extends State<PhotoLibraryScreen> {
   List<File> _images = [];
+  final ImagePicker _picker = ImagePicker(); // Create an instance of ImagePicker
 
   @override
   void initState() {
@@ -24,6 +27,28 @@ class _PhotoLibraryScreenState extends State<PhotoLibraryScreen> {
     setState(() {
       _images = imageList.map((item) => File(item.path)).toList();
     });
+  }
+
+  Future<void> _pickImageFromGallery() async {
+    final pickedFile = await _picker.pickImage(source: ImageSource.gallery); // Pick an image from the gallery
+    if (pickedFile != null) {
+      final croppedImage = await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => CropPage(imageFile: File(pickedFile.path)), // Navigate to CropPage for cropping
+        ),
+      );
+
+      if (croppedImage != null) {
+        final directory = await getApplicationDocumentsDirectory();
+        final File newImage = File('${directory.path}/${DateTime.now().toIso8601String()}.jpg');
+        await newImage.writeAsBytes(await croppedImage.readAsBytes());
+
+        setState(() {
+          _images.add(newImage); // Add the new image to the list
+        });
+      }
+    }
   }
 
   Future<void> _deleteImage(File image) async {
@@ -69,6 +94,12 @@ class _PhotoLibraryScreenState extends State<PhotoLibraryScreen> {
       appBar: AppBar(
         title: Text('Photo Library'),
         centerTitle: true,
+        actions: [
+          IconButton(
+            icon: Icon(Icons.add_photo_alternate), // Add a button for selecting from the gallery
+            onPressed: _pickImageFromGallery, // Open the gallery when pressed
+          ),
+        ],
       ),
       body: _images.isEmpty
           ? Center(child: Text('No images found', style: TextStyle(fontSize: 18.0)))
