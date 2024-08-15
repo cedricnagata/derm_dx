@@ -70,6 +70,9 @@ flutter:
   assets:
     - assets/models/diagnosis_model.tflite
     - assets/models/benign_malignant_model.tflite
+    - assets/images/demo_1.JPG
+    - assets/images/demo_2.JPG
+    - assets/images/demo_3.PNG
 
   # To add assets to your application, add an assets section, like this:
   # assets:

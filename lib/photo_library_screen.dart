@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 import 'package:image_picker/image_picker.dart';
@@ -17,7 +18,30 @@ class _PhotoLibraryScreenState extends State<PhotoLibraryScreen> {
   @override
   void initState() {
     super.initState();
+    _loadDefaultImages();
     _loadImages();
+  }
+
+  Future<void> _loadDefaultImages() async {
+    final directory = await getApplicationDocumentsDirectory();
+
+    // List of demo image asset paths
+    final List<String> assetImages = [
+      'assets/images/demo_1.JPG',
+      'assets/images/demo_2.JPG',
+      'assets/images/demo_3.PNG',
+    ];
+
+    for (String assetImage in assetImages) {
+      final byteData = await rootBundle.load(assetImage); // Load image from assets
+      final file = File('${directory.path}/${assetImage.split('/').last}');
+      if (!await file.exists()) {
+        await file.writeAsBytes(byteData.buffer.asUint8List()); // Write image to app's local directory
+      }
+      setState(() {
+        _images.add(file); // Add the image file to the _images list
+      });
+    }
   }
 
   Future<void> _loadImages() async {
