@@ -56,7 +56,7 @@ class ResultsPage extends StatelessWidget {
                     ),
                     Text(
                       '$diagnosis',
-                      style: TextStyle(fontSize: 20, color: diagnosis == '1' ? Colors.red.shade800 : Colors.green.shade800),
+                      style: TextStyle(fontSize: 20, color: diagnosis == '1' ? Colors.red : Colors.green.shade800),
                     ),
                     SizedBox(height: 10),
                     Text(
@@ -71,7 +71,7 @@ class ResultsPage extends StatelessWidget {
                     ),
                     Text(
                       '$benignMalignant',
-                      style: TextStyle(fontSize: 20, color: benignMalignant == '1' ? Colors.red.shade800 : Colors.green.shade800),
+                      style: TextStyle(fontSize: 20, color: benignMalignant == '1' ? Colors.red : Colors.green.shade800),
                     ),
                     SizedBox(height: 10),
                     Text(
