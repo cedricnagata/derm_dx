@@ -11,6 +11,8 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
+  
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -19,9 +21,9 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
         textTheme: TextTheme(
-          headline1: TextStyle(fontSize: 32.0, fontWeight: FontWeight.bold, color: Colors.blueAccent),
-          headline6: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold, color: Colors.blueAccent),
-          bodyText2: TextStyle(fontSize: 18.0),
+          headlineLarge: TextStyle(fontSize: 32.0, fontWeight: FontWeight.bold, color: Colors.blueAccent),
+          headlineSmall: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold, color: Colors.blueAccent),
+          bodyMedium: TextStyle(fontSize: 18.0),
         ),
         buttonTheme: ButtonThemeData(
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18.0)),
@@ -65,7 +67,7 @@ class HomePage extends StatelessWidget {
             children: <Widget>[
               Text(
                 'Welcome to DERMDX',
-                style: Theme.of(context).textTheme.headline1,
+                style: Theme.of(context).textTheme.headlineLarge,
                 textAlign: TextAlign.center,
               ),
               SizedBox(height: 20),
@@ -80,7 +82,7 @@ class HomePage extends StatelessWidget {
                 label: Text('Capture Image'),
                 style: ElevatedButton.styleFrom(
                   padding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 20.0),
-                  textStyle: Theme.of(context).textTheme.headline6,
+                  textStyle: Theme.of(context).textTheme.headlineSmall,
                 ),
               ),
               SizedBox(height: 20),
@@ -95,7 +97,7 @@ class HomePage extends StatelessWidget {
                 label: Text('Select from Library'),
                 style: ElevatedButton.styleFrom(
                   padding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 20.0),
-                  textStyle: Theme.of(context).textTheme.headline6,
+                  textStyle: Theme.of(context).textTheme.headlineSmall,
                 ),
               ),
             ],
