@@ -1,7 +1,7 @@
 # DERMDX: Skin Lesion Diagnosis App
 
-**DERMDX** is an iOS app designed to help users diagnose skin lesions by taking a photo of the lesion and processing it to determine whether it is benign or malignant. The app utilizes deep learning models trained on over 44,000 images of real skin lesions to provide accurate results at the touch of a button. Try it here!
-https://appetize.io/app/b_yw7vurhc57tvnhp4nxzy2et2wu
+**DERMDX** is an iOS app designed to help users diagnose skin lesions by taking a photo of the lesion and processing it to determine whether it is benign or malignant. The app utilizes deep learning models trained on over 44,000 images of real skin lesions to provide accurate results at the touch of a button. 
+Try it here! https://appetize.io/app/b_yw7vurhc57tvnhp4nxzy2et2wu
 
 ## Features
 - **Select or Capture an Image**: Users can either take a photo of their skin lesion using the phone's camera or select one from their photo library.
