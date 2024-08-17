@@ -29,3 +29,4 @@ DERMdx empowers users by providing fast, reliable, and accurate insights into th
 ---
 
 Feel free to explore the codebase and try out the app for yourself!
+https://appetize.io/app/b_tlujw2vidddcn4atlgqfpecg5m
