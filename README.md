@@ -27,3 +27,8 @@ Try a demo version here! https://appetize.io/app/b_yw7vurhc57tvnhp4nxzy2et2wu
 
 ## Conclusion
 DERMdx empowers users by providing fast, reliable, and accurate insights into their skin health. With a simple user interface and powerful deep learning models running in the background, the app offers a convenient way to perform a preliminary diagnosis of skin lesions.
+
+---
+
+## See Skin Lesion Classifier for model creation and training:
+https://github.com/cedricnagata/skin_lesion_classifier
