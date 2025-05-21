@@ -15,7 +15,7 @@ class _CropPageState extends State<CropPage> {
   Future<void> _startCropping() async {
     CroppedFile? croppedFile = await ImageCropper().cropImage(
       sourcePath: widget.imageFile.path,
-      aspectRatio: CropAspectRatio(ratioX: 1, ratioY: 1), // Fixed square crop aspect ratio
+      aspectRatio: const CropAspectRatio(ratioX: 1, ratioY: 1), // Fixed square crop aspect ratio
       aspectRatioPresets: [CropAspectRatioPreset.square], // Only allow square cropping
       uiSettings: [
         AndroidUiSettings(
@@ -43,27 +43,27 @@ class _CropPageState extends State<CropPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Image Instructions'),
+        title: const Text('Image Instructions'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(
+            const Text(
               'CROP IMAGE: ',
               textAlign: TextAlign.center,
               style: TextStyle(fontSize: 18.0, color: Colors.black),
             ),
-            Text(
+            const Text(
               'For accurate results, center the lesion in the square and avoid zooming in or scaling the image',
               textAlign: TextAlign.center,
               style: TextStyle(fontSize: 18.0, color: Colors.black),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             ElevatedButton(
               onPressed: _startCropping, // Start the cropping process
-              child: Text('Start Cropping'),
+              child: const Text('Start Cropping'),
             ),
           ],
         ),

@@ -6,7 +6,7 @@ import 'package:path/path.dart';
 import 'photo_library_screen.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
-        textTheme: TextTheme(
+        textTheme: const TextTheme(
           headlineLarge: TextStyle(fontSize: 32.0, fontWeight: FontWeight.bold, color: Colors.blueAccent),
           headlineSmall: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold, color: Colors.blueAccent),
           bodyMedium: TextStyle(fontSize: 18.0),
@@ -36,6 +36,8 @@ class MyApp extends StatelessWidget {
 }
 
 class HomePage extends StatelessWidget {
+  const HomePage({super.key});
+
   Future<void> _pickImageFromGallery() async {
     try {
       final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
@@ -55,7 +57,7 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('DERMDX Home'),
+        title: const Text('DERMDX Home'),
         centerTitle: true,
       ),
       body: Center(  // Centering the content
@@ -69,19 +71,19 @@ class HomePage extends StatelessWidget {
                 style: Theme.of(context).textTheme.headlineLarge,
                 textAlign: TextAlign.center,
               ),
-              SizedBox(height: 20),
-              Text(
+              const SizedBox(height: 20),
+              const Text(
                 'Accurate skin lesion detection at the touch of a button.',
                 style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.normal, color: Colors.blueGrey),
                 textAlign: TextAlign.center,
               ),
-              SizedBox(height: 20),
-              Text(
+              const SizedBox(height: 20),
+              const Text(
                 'Trained on 44,033 images of real skin lesions.',
                 style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.normal, color: Colors.blueGrey),
                 textAlign: TextAlign.center,
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               ElevatedButton.icon(
                 onPressed: () {
                   Navigator.push(
@@ -89,10 +91,10 @@ class HomePage extends StatelessWidget {
                     MaterialPageRoute(builder: (context) => PhotoLibraryScreen()),
                   );
                 },
-                icon: Icon(Icons.photo_library),
-                label: Text('Select Image from Library'),
+                icon: const Icon(Icons.photo_library),
+                label: const Text('Select Image from Library'),
                 style: ElevatedButton.styleFrom(
-                  padding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 20.0),
+                  padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 20.0),
                   textStyle: Theme.of(context).textTheme.headlineSmall,
                 ),
               ),

@@ -9,7 +9,7 @@ import 'results_page.dart';
 class LoadingPage extends StatefulWidget {
   final File imageFile;
 
-  LoadingPage({required this.imageFile});
+  const LoadingPage({super.key, required this.imageFile});
 
   @override
   _LoadingPageState createState() => _LoadingPageState();
@@ -31,7 +31,7 @@ class _LoadingPageState extends State<LoadingPage> {
 
   Future<void> _startPrediction() async {
     // Simulate a loading process
-    Timer.periodic(Duration(milliseconds: 100), (timer) {
+    Timer.periodic(const Duration(milliseconds: 100), (timer) {
       setState(() {
         _progress += 0.1;
         if (_progress >= 1.0) {
@@ -65,7 +65,7 @@ class _LoadingPageState extends State<LoadingPage> {
       };
 
       // Ensure the progress bar finishes before transitioning
-      await Future.delayed(Duration(milliseconds: 200), () {
+      await Future.delayed(const Duration(milliseconds: 200), () {
         if (_progress < 1.0) {
           setState(() {
             _progress = 1.0;
@@ -86,7 +86,7 @@ class _LoadingPageState extends State<LoadingPage> {
   }
 
   Future<Map<String, dynamic>> _delayedPrediction(Future<Map<String, dynamic>> Function() predictionTask) async {
-    return await Future.delayed(Duration(milliseconds: 500), predictionTask);
+    return await Future.delayed(const Duration(milliseconds: 500), predictionTask);
   }
 
   @override
@@ -94,25 +94,25 @@ class _LoadingPageState extends State<LoadingPage> {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false, // Remove the back button
-        title: Text('Processing...'),
+        title: const Text('Processing...'),
         centerTitle: true,
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text(
+            const Text(
               'Analyzing Image...',
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 20),
-            Container(
+            const SizedBox(height: 20),
+            SizedBox(
               width: 200,
               height: 10,
               child: LinearProgressIndicator(
                 value: _progress,
                 backgroundColor: Colors.grey[200],
-                valueColor: AlwaysStoppedAnimation<Color>(Colors.blueAccent),
+                valueColor: const AlwaysStoppedAnimation<Color>(Colors.blueAccent),
               ),
             ),
           ],

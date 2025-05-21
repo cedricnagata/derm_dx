@@ -5,13 +5,13 @@ import 'loading_page.dart'; // Import the LoadingPage
 class UploadPage extends StatelessWidget {
   final File imageFile;
 
-  UploadPage({required this.imageFile});
+  const UploadPage({super.key, required this.imageFile});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Upload Image'),
+        title: const Text('Upload Image'),
         centerTitle: true,
       ),
       body: Center(
@@ -19,7 +19,7 @@ class UploadPage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Image.file(imageFile),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
                 Navigator.push(
@@ -29,7 +29,7 @@ class UploadPage extends StatelessWidget {
                   ),
                 );
               },
-              child: Text('Process Image'),
+              child: const Text('Process Image'),
             ),
           ],
         ),

@@ -7,6 +7,8 @@ import 'crop_page.dart'; // Import the CropPage
 import 'upload_page.dart';
 
 class PhotoLibraryScreen extends StatefulWidget {
+  const PhotoLibraryScreen({super.key});
+
   @override
   _PhotoLibraryScreenState createState() => _PhotoLibraryScreenState();
 }
@@ -92,19 +94,19 @@ class _PhotoLibraryScreenState extends State<PhotoLibraryScreen> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text('Delete Image'),
-          content: Text('Are you sure you want to delete this image?'),
+          title: const Text('Delete Image'),
+          content: const Text('Are you sure you want to delete this image?'),
           actions: <Widget>[
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: Text('Cancel'),
+              child: const Text('Cancel'),
             ),
             TextButton(
               onPressed: () {
                 Navigator.pop(context);
                 _deleteImage(image);
               },
-              child: Text('Delete'),
+              child: const Text('Delete'),
             ),
           ],
         );
@@ -116,20 +118,20 @@ class _PhotoLibraryScreenState extends State<PhotoLibraryScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Photo Library'),
+        title: const Text('Photo Library'),
         centerTitle: true,
         actions: [
           IconButton(
-            icon: Icon(Icons.add_photo_alternate), // Add a button for selecting from the gallery
+            icon: const Icon(Icons.add_photo_alternate), // Add a button for selecting from the gallery
             onPressed: _pickImageFromGallery, // Open the gallery when pressed
           ),
         ],
       ),
       body: _images.isEmpty
-          ? Center(child: Text('No images found', style: TextStyle(fontSize: 18.0)))
+          ? const Center(child: Text('No images found', style: TextStyle(fontSize: 18.0)))
           : GridView.builder(
               padding: const EdgeInsets.all(8.0),
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 3,
                 crossAxisSpacing: 8.0,
                 mainAxisSpacing: 8.0,

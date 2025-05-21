@@ -8,6 +8,8 @@ import 'dart:ui' as ui;
 import 'photo_library_screen.dart';
 
 class CameraScreen extends StatefulWidget {
+  const CameraScreen({super.key});
+
   @override
   _CameraScreenState createState() => _CameraScreenState();
 }
@@ -96,7 +98,7 @@ class _CameraScreenState extends State<CameraScreen> {
     return Scaffold(
       backgroundColor: Colors.black,  // Set the background to black
       appBar: AppBar(
-        title: Text('Capture Image'),
+        title: const Text('Capture Image'),
         centerTitle: true,
         backgroundColor: Colors.black,  // Set the AppBar background to black
       ),
@@ -136,7 +138,7 @@ class _CameraScreenState extends State<CameraScreen> {
                   child: Center(
                     child: FloatingActionButton(
                       backgroundColor: Colors.white,
-                      child: Icon(Icons.camera, color: Colors.black, size: 30),
+                      child: const Icon(Icons.camera, color: Colors.black, size: 30),
                       onPressed: () async {
                         try {
                           await _initializeControllerFuture;
@@ -162,7 +164,7 @@ class _CameraScreenState extends State<CameraScreen> {
               ],
             );
           } else {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           }
         },
       ),
