@@ -43,9 +43,32 @@ class DiagnosisService {
     }
     
     private func prepareImageForAPI(image: UIImage) -> Data? {
-        // Resize to 384x384 and convert to JPG
-        guard let resizedImage = image.resizedToSquare(size: 384) else { return nil }
+        // First, create a square version of the image
+        let squareImage = cropToSquare(image: image)
+        
+        // Then resize to 384x384 for the API
+        let targetSize = CGSize(width: 384, height: 384)
+        
+        let renderer = UIGraphicsImageRenderer(size: targetSize)
+        let resizedImage = renderer.image { _ in
+            squareImage.draw(in: CGRect(origin: .zero, size: targetSize))
+        }
+        
+        // Convert to JPEG data with high quality
         return resizedImage.jpegData(compressionQuality: 0.9)
+    }
+    
+    private func cropToSquare(image: UIImage) -> UIImage {
+        let size = min(image.size.width, image.size.height)
+        let x = (image.size.width - size) / 2
+        let y = (image.size.height - size) / 2
+        let cropRect = CGRect(x: x, y: y, width: size, height: size)
+        
+        if let cgImage = image.cgImage?.cropping(to: cropRect) {
+            return UIImage(cgImage: cgImage, scale: image.scale, orientation: image.imageOrientation)
+        }
+        
+        return image
     }
     
     private func createMultipartFormData(boundary: String, imageData: Data) -> Data {
@@ -62,37 +85,5 @@ class DiagnosisService {
         body.append("--\(boundary)--\r\n".data(using: .utf8)!)
         
         return body
-    }
-}
-
-// Extension to resize UIImage to square
-extension UIImage {
-    func resizedToSquare(size: CGFloat) -> UIImage? {
-        let format = UIGraphicsImageRendererFormat()
-        format.scale = 1
-        
-        let renderer = UIGraphicsImageRenderer(size: CGSize(width: size, height: size), format: format)
-        return renderer.image { context in
-            let rect = CGRect(x: 0, y: 0, width: size, height: size)
-            // Fill with white background
-            UIColor.white.setFill()
-            context.fill(rect)
-            
-            // Center and scale the image while maintaining aspect ratio
-            let drawRect: CGRect
-            if self.size.width > self.size.height {
-                let scaleFactor = size / self.size.height
-                let scaledWidth = self.size.width * scaleFactor
-                let xOffset = (scaledWidth - size) / 2
-                drawRect = CGRect(x: -xOffset, y: 0, width: scaledWidth, height: size)
-            } else {
-                let scaleFactor = size / self.size.width
-                let scaledHeight = self.size.height * scaleFactor
-                let yOffset = (scaledHeight - size) / 2
-                drawRect = CGRect(x: 0, y: -yOffset, width: size, height: scaledHeight)
-            }
-            
-            self.draw(in: drawRect)
-        }
     }
 } 
