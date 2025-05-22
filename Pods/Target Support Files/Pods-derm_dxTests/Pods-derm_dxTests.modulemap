@@ -1,0 +1,6 @@
+framework module Pods_derm_dxTests {
+  umbrella header "Pods-derm_dxTests-umbrella.h"
+
+  export *
+  module * { export * }
+}
