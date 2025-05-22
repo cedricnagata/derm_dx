@@ -11,30 +11,50 @@ class DiagnosisService {
             return
         }
         
+        // Create a request with multipart form data
         var request = URLRequest(url: apiUrl)
         request.httpMethod = "POST"
         
-        let boundary = UUID().uuidString
+        // Create form data with the image
+        let boundary = "Boundary-\(UUID().uuidString)"
         request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
         
-        request.httpBody = createMultipartFormData(boundary: boundary, imageData: imageData)
+        // Create the form data
+        let formData = createFormData(with: imageData, boundary: boundary)
         
-        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+        print("Sending request to API with \(imageData.count) bytes of image data in form")
+        
+        // Use uploadTask to send the form data
+        let task = URLSession.shared.uploadTask(with: request, from: formData) { data, response, error in
             if let error = error {
+                print("API request error: \(error.localizedDescription)")
                 completion(.failure(error))
                 return
             }
             
+            // Print response status code for debugging
+            if let httpResponse = response as? HTTPURLResponse {
+                print("API response status code: \(httpResponse.statusCode)")
+            }
+            
             guard let data = data else {
+                print("No data received from API")
                 completion(.failure(NSError(domain: "DiagnosisService", code: 2, userInfo: [NSLocalizedDescriptionKey: "No data received"])))
                 return
+            }
+            
+            // Print raw response for debugging
+            if let responseString = String(data: data, encoding: .utf8) {
+                print("API response: \(responseString)")
             }
             
             do {
                 let decoder = JSONDecoder()
                 let response = try decoder.decode(DiagnosisResponse.self, from: data)
+                print("Successfully decoded response: \(response)")
                 completion(.success(response))
             } catch {
+                print("Failed to decode response: \(error)")
                 completion(.failure(error))
             }
         }
@@ -55,7 +75,7 @@ class DiagnosisService {
         }
         
         // Convert to JPEG data with high quality
-        return resizedImage.jpegData(compressionQuality: 0.9)
+        return resizedImage.jpegData(compressionQuality: 0.95)
     }
     
     private func cropToSquare(image: UIImage) -> UIImage {
@@ -71,19 +91,19 @@ class DiagnosisService {
         return image
     }
     
-    private func createMultipartFormData(boundary: String, imageData: Data) -> Data {
-        var body = Data()
+    private func createFormData(with imageData: Data, boundary: String) -> Data {
+        var data = Data()
         
-        // Add image data
-        body.append("--\(boundary)\r\n".data(using: .utf8)!)
-        body.append("Content-Disposition: form-data; name=\"image\"; filename=\"image.jpg\"\r\n".data(using: .utf8)!)
-        body.append("Content-Type: image/jpeg\r\n\r\n".data(using: .utf8)!)
-        body.append(imageData)
-        body.append("\r\n".data(using: .utf8)!)
+        // Add the image field
+        data.append("--\(boundary)\r\n".data(using: .utf8)!)
+        data.append("Content-Disposition: form-data; name=\"image\"; filename=\"image.jpg\"\r\n".data(using: .utf8)!)
+        data.append("Content-Type: image/jpeg\r\n\r\n".data(using: .utf8)!)
+        data.append(imageData)
+        data.append("\r\n".data(using: .utf8)!)
         
-        // Close the boundary
-        body.append("--\(boundary)--\r\n".data(using: .utf8)!)
+        // Close the form
+        data.append("--\(boundary)--\r\n".data(using: .utf8)!)
         
-        return body
+        return data
     }
 } 
