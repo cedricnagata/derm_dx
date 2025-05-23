@@ -3,7 +3,7 @@ import UIKit
 
 class DiagnosisService {
     // Replace with your actual API endpoint
-    private let apiUrl = URL(string: "https://cedricnagata-skin-lesion-classifier--skin-lesion-classif-d628c3.modal.run/predict")!
+    private let apiUrl = URL(string: "https://cedricnagata-skin-lesion-classifier--skin-lesion-cla-d628c3-dev.modal.run/predict")!
     
     func getDiagnosis(image: UIImage, completion: @escaping (Result<DiagnosisResponse, Error>) -> Void) {
         guard let imageData = prepareImageForAPI(image: image) else {
